@@ -1,15 +1,26 @@
 from enum import Enum
+import os
+from typing import Any
 
 from fastapi import Depends, FastAPI, HTTPException
 from pydantic import BaseModel
 import logging
+from dotenv import load_dotenv
+
+from groq import Groq
+
+load_dotenv()  # Loads variables from .env into os.environ
+
+client = Groq(
+    api_key=os.getenv("GROQ_API_KEY"),
+)
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger("fastapi")
 
-API_TOKEN = "1234567890abcdef"
+API_TOKEN = "123"
 
 
 def common_api_token(api_token: str):
@@ -53,7 +64,7 @@ class TipoOperacao(str, Enum):
 
 
 class Response(BaseModel):
-    value: float
+    value: Any
 
 
 @app.post("/operacao_matematica")
@@ -107,3 +118,22 @@ def soma_formato3(numeros: Numeros):
             status_code=400, detail="Número 1 deve ser maior ou igual a zero"
         )
     return {"resultado": total}
+
+
+class Historia(BaseModel):
+    tema: str
+
+
+@app.post("/gerar_historia")
+def gerar_historia(historia: Historia):
+    prompt = f"Escreva uma história sobre {historia.tema}"
+    chat_completion = client.chat.completions.create(
+        messages=[
+            {
+                "role": "user",
+                "content": prompt,
+            }
+        ],
+        model="llama-3.1-8b-instant",
+    )
+    return Response(value=chat_completion.choices[0].message.content)
