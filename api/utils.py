@@ -4,8 +4,6 @@ from fastapi import HTTPException
 from groq import Groq
 from models import Response
 
-API_TOKEN = "123"
-
 
 def get_logger():
     logging.basicConfig(
@@ -17,6 +15,7 @@ def get_logger():
 
 def common_api_token(api_token: str):
     logger = get_logger()
+    API_TOKEN = os.getenv("API_TOKEN")
     logger.info(f"Verificando token: {api_token}")
     if api_token != API_TOKEN:
         logger.warning(f"Token inválido: {api_token}")

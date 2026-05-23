@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from models import TipoOperacao, Numeros, Response
-from utils import API_TOKEN
 from fastapi import HTTPException
+import os
 
 router = APIRouter()
 
@@ -41,6 +41,7 @@ def soma_formato2(numero1: int, numero2: int):
     "/soma_formato3",
 )
 def soma_formato3(numeros: Numeros):
+    API_TOKEN = os.getenv("API_TOKEN")
     if numeros.api_token != API_TOKEN:
         raise HTTPException(status_code=401, detail="Token inválido")
 
