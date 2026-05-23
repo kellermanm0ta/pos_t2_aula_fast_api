@@ -1,10 +1,10 @@
 from fastapi import Depends, FastAPI
-from dotenv import load_dotenv
+from dotenv import find_dotenv, load_dotenv
 from utils import common_api_token, get_logger
 from routers.llm_route import router as llm_router
 from routers.operacoes_router import router as operacoes_router
 
-load_dotenv()  # Loads variables from .env into os.environ
+load_dotenv(find_dotenv())  # Loads variables from .env into os.environ
 
 logger = get_logger()
 
