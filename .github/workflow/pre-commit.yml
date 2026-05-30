@@ -1,13 +1,14 @@
+name: Verificação do pre-commit
+
 on:
   pull_request:
   push:
-    branches: [main, test-me-*]
+    branches: [main]
 
 jobs:
-  main:
+  pre-commit:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
     - uses: actions/setup-python@v3
-    - name: self test action
-      uses: ./
+    - uses: pre-commit/action@v3.0.1
